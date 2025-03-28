@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker green */
+        }
+        video {
+            width: 80%;
+            height: auto;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #analysisResult {
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            height: 400px;
+            margin-left: 750px;
+            font-size: larger;
+
+        }
+        #resultText{
+            font-size: larger;
+            font-weight: bold;
+        }
+        pre {
+            white-space: pre-wrap; /* Wrap long lines */
+            word-wrap: break-word; /* Break long words */
+        }
+        #videoContainer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Waste Category Detection Model</h1>
+    <button id="startButton">Run Model and Open Camera</button>
+    <button id="stopButton" style="display: none;">Stop Video</button>
+    <button id="analyzeButton">Analyze Results</button>
+    <br><br>
+    <div id="videoContainer" style="display: none;">
+        <h2>Video Feed</h2>
+        <img id="videoFeed" src="" alt="Video Feed">
+    </div>
+
+    <div id="analysisResult">
+        <h2>Analysis Result</h2>
+        <pre id="resultText"></pre>
+    </div>
+
+    <script>
+        document.getElementById('startButton').onclick = function() {
+            document.getElementById('videoContainer').style.display = 'block';
+            document.getElementById('videoFeed').src = "/video_feed";
+            document.getElementById('stopButton').style.display = 'inline'; // Show stop button
+        };
+
+        document.getElementById('stopButton').onclick = function() {
+            document.getElementById('videoFeed').src = ""; // Stop the video feed
+            document.getElementById('videoContainer').style.display = 'none'; // Hide video container
+            this.style.display = 'none'; // Hide stop button
+        };
+
+        document.getElementById('analyzeButton').onclick = function() {
+            fetch('/analyze')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultText').textContent = data.result;
+                    document.getElementById('analysisResult').style.display = 'block'; // Show analysis result
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    </script>
+</body>
+</html>
